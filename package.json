@@ -1,0 +1,51 @@
+{
+  "name": "deepseek-usage-tracker",
+  "displayName": "DeepSeek Usage Tracker",
+  "description": "在 VS Code 右下角状态栏实时显示 DeepSeek API 账户余额，并提供详尽的定价参考与模型信息",
+  "version": "0.2.0",
+  "publisher": "foreverxzhh",
+  "license": "MIT",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Visualization",
+    "Data Science"
+  ],
+  "galleryBanner": {
+    "color": "#1e293b",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "deepseek-usage.click",
+        "title": "DeepSeek 用量追踪"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foreverxzhh/deepseek-usage-tracker"
+  },
+  "bugs": {
+    "url": "https://github.com/foreverxzhh/deepseek-usage-tracker/issues"
+  },
+  "homepage": "https://github.com/foreverxzhh/deepseek-usage-tracker#readme",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  }
+}
