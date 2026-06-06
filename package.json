@@ -26,6 +26,10 @@
       {
         "command": "deepseek-usage.click",
         "title": "DeepSeek 用量追踪"
+      },
+      {
+        "command": "deepseek-usage.refresh",
+        "title": "DeepSeek 一键刷新余额"
       }
     ]
   },
