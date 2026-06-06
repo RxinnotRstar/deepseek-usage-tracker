@@ -14,6 +14,8 @@
 ### 功能
 
 - **状态栏余额显示** — 右下角实时显示 DeepSeek 账户总余额
+- **一键刷新** — `Ctrl+Shift+P` 执行「DeepSeek 一键刷新余额」，跳过菜单直接刷新，可绑快捷键
+- **余额变动提示** — 刷新时通知显示余额变化量，如 `（-0.31）`，一目了然
 - **一键查看详情** — 点击打开独立面板，展示余额、充值/赠送明细
 - **模型定价参考** — 内置官方最新定价表（V4-Flash / V4-Pro），含缓存命中价格与折扣信息
 - **可用模型列表** — 实时查询当前账户可用的模型
@@ -25,7 +27,8 @@
 1. 安装扩展后，右下角状态栏显示 `DeepSeek: 未登录`
 2. 点击状态栏 → 输入你的 DeepSeek API Key
 3. 自动显示余额：`DeepSeek: ¥xx.xx`
-4. 再次点击可：刷新余额 / 查看详情 / 更换 Key / 清除 Key
+4. 点击状态栏可：刷新余额 / 查看详情 / 更换 Key / 清除 Key
+5. 直接执行命令 `deepseek-usage.refresh` 可一键刷新，适合绑定快捷键或由 AI 助手自动调用
 
 ### 获取 API Key
 
@@ -46,6 +49,8 @@ Display your DeepSeek API account balance in the VS Code status bar, with detail
 ### Features
 
 - **Status bar balance** — Shows total balance in the bottom-right corner
+- **One-click refresh** — Run `deepseek-usage.refresh` from the command palette to refresh instantly, skips the menu. Can be bound to a hotkey.
+- **Balance delta display** — Refresh notification shows the balance change, e.g. `（-0.31）`, at a glance
 - **Detail panel** — Click to open a standalone panel with balance breakdown (top-up / granted)
 - **Model pricing** — Built-in official pricing table (V4-Flash / V4-Pro), including cache hit prices and discounts
 - **Available models** — Fetches real-time model list from the API
@@ -57,7 +62,8 @@ Display your DeepSeek API account balance in the VS Code status bar, with detail
 1. After installation, the status bar shows `DeepSeek: Not logged in`
 2. Click the status bar → enter your DeepSeek API Key
 3. Balance appears: `DeepSeek: ¥xx.xx`
-4. Click again to: Refresh / View details / Change Key / Clear Key
+4. Click the status bar to: Refresh / View details / Change Key / Clear Key
+5. Execute `deepseek-usage.refresh` directly for one-click refresh — ideal for hotkey binding or AI assistant automation
 
 ### Get an API Key
 
