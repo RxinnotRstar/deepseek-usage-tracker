@@ -5,6 +5,7 @@ import { t, formatTooltip } from './i18n';
 
 const SECRET_KEY_ID = 'deepseek-api-key';
 let _updatingBalance = false;
+let _lastBalance: number | null = null;
 
 export function activate(context: vscode.ExtensionContext) {
   const statusBar = vscode.window.createStatusBarItem(
@@ -33,10 +34,14 @@ export function activate(context: vscode.ExtensionContext) {
     if (!action) return;
 
     switch (action.id) {
-      case 'refresh':
-        await updateStatusBar(context, statusBar);
-        vscode.window.showInformationMessage(t('msgRefreshed'));
+      case 'refresh': {
+        const delta = await updateStatusBar(context, statusBar);
+        const msg = t('msgRefreshed');
+        vscode.window.showInformationMessage(
+          delta != null ? `${msg}（${delta > 0 ? '+' : ''}${delta.toFixed(2)}）` : msg
+        );
         break;
+      }
       case 'details':
         UsagePanel.createOrShow(context);
         break;
@@ -51,6 +56,21 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
   context.subscriptions.push(clickCmd);
+
+  // 一键刷新命令：跳过 QuickPick 菜单，直接刷新余额
+  const refreshCmd = vscode.commands.registerCommand('deepseek-usage.refresh', async () => {
+    const apiKey = await context.secrets.get(SECRET_KEY_ID);
+    if (!apiKey) {
+      await promptForApiKey(context, statusBar);
+      return;
+    }
+    const delta = await updateStatusBar(context, statusBar);
+    const msg = t('msgRefreshed');
+    vscode.window.showInformationMessage(
+      delta != null ? `${msg}（${delta > 0 ? '+' : ''}${delta.toFixed(2)}）` : msg
+    );
+  });
+  context.subscriptions.push(refreshCmd);
 
   updateStatusBar(context, statusBar);
   const timer = setInterval(() => updateStatusBar(context, statusBar), 5 * 60 * 1000);
@@ -74,16 +94,18 @@ async function promptForApiKey(context: vscode.ExtensionContext, statusBar: vsco
   vscode.window.showInformationMessage(t('msgKeySaved'));
 }
 
-async function updateStatusBar(context: vscode.ExtensionContext, statusBar: vscode.StatusBarItem) {
-  if (_updatingBalance) return;
+async function updateStatusBar(context: vscode.ExtensionContext, statusBar: vscode.StatusBarItem): Promise<number | null> {
+  if (_updatingBalance) return null;
   _updatingBalance = true;
+  const oldBalance = _lastBalance;
+  let newTotal: number | null = null;
   try {
     const apiKey = await context.secrets.get(SECRET_KEY_ID);
 
     if (!apiKey) {
       statusBar.text = `$(key) ${t('statusNotLoggedIn')}`;
       statusBar.tooltip = t('statusClickToLogin');
-      return;
+      return null;
     }
 
     const balance = await getBalance(apiKey);
@@ -91,6 +113,8 @@ async function updateStatusBar(context: vscode.ExtensionContext, statusBar: vsco
     if (balance.is_available && balance.balance_infos.length > 0) {
       const info = balance.balance_infos[0];
       const total = parseFloat(info.total_balance);
+      newTotal = total;
+      _lastBalance = total;
 
       statusBar.text = `$(graph) DeepSeek: ¥${total.toFixed(2)}`;
       statusBar.tooltip = formatTooltip(
@@ -109,6 +133,10 @@ async function updateStatusBar(context: vscode.ExtensionContext, statusBar: vsco
   } finally {
     _updatingBalance = false;
   }
+  if (oldBalance != null && newTotal != null) {
+    return newTotal - oldBalance;
+  }
+  return null;
 }
 
 export function deactivate() {}
